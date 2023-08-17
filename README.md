@@ -1,5 +1,5 @@
 # C - Simple Shell
-## A customised simple UNIX command interpreter
+### A customised simple UNIX command interpreter
 ***
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -13,10 +13,8 @@
 4. [Features](#features)
 5. [Program Flow](#program-flow)
 6. [Edge and Special Cases](#edge-and-special-cases)
-7. [Debugging and Testing](#debugging-and-testing)
-8. [Potential Pitfalls](#potential-pitfalls)
-9. [Scenarios that Might Cause the Program to Crash](#scenarios-that-might-cause-the-program-to-crash)
-10. [Authors](#authors)
+7. [Scenarios that Might Cause the Program to Crash](#scenarios-that-might-cause-the-program-to-crash)
+8. [Authors](#authors)
 ***
 ## Introduction
 Simple Shell is a basic shell program that provides functionalities similar to traditional Unix shells. You can use it to run commands either by specifying their full paths, relative paths or by relying on the PATH environment variable. This shell handles command execution, provides feedback for errors and ensures proper memory management.
@@ -42,18 +40,35 @@ With the parsed tokens and determined paths, we finally execute the command.
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
-**2. Running:**
+**2. Running**
 * After compilation, start the shell:
 ```bash
 ./hsh
 ```
-**3. Using the Shell:**
-Example:
+**3. Using the Shell - Examples**
+Single command with arguments:
 ```bash
 #cisfun$ ls -l
 ```
+Path to command with arguments:
+```bash
+#cisfun$ /bin/ls -a
+```
+Non-existent command:
+```bash
+#cisfun$ nonexistentcmd
+```
+Non-existent command with arguments:
+```bash
+#cisfun$ nonexistentcmd -a -l
+```
+Check command with multiple arguments:
+```bash
+#cisfun$ echo Hello World!
+```
+End of File (Ctrl+D):
 
-
+Press Ctrl+D while in the shell prompt. It should smoothly exit and return you to your original terminal shell. 
 **4. Exiting:**
 CTRL+D or typing exit and pressing enter.
 ***
@@ -65,8 +80,9 @@ CTRL+D or typing exit and pressing enter.
 * Proper memory management to avoid memory leaks.
 ***
 ## Program Flow
+Click [here](https://miro.com/welcomeonboard/SUhQek1RcDVpWlNXVDhwY1RaMFU2QTIyMlpzbVpzVkY5UzdIUGYycXVXdWYweFFBdlkzTmZEY2gyblBpOXFHbHwzNDU4NzY0NTI1Njk3ODc1NTExfDI=?share_link_id=121824970025) to check our program's flowchart.
 1. The shell starts and waits for user input.
-2. When input is received, the shell tokenizes the input into commands and arguments.
+2. When input is received, the shell tokenises the input into commands and arguments.
 3. If the command starts with '/' or '.', the shell tries to execute it directly.
 4. If the command doesn't start with the characters mentioned at the previous stage, the shell searches for the command in the system's PATH directories.
 5. The command is executed, and the shell waits for more user input.
@@ -82,10 +98,11 @@ If the command exists but the user doesn't have the right permissions to execute
 **Invalid Arguments:**
 If a command is executed with incorrect arguments, the command itself should display its error.
 ***
-## Debugging and Testing
-***
-## Potential Pitfalls
-***
 ## Scenarios that Might Cause the Program to Crash
+* Running out of memory. This program dynamically allocates memory for user input, tokens, and the linked list for the PATH. If the system runs out of memory, allocation could fail.
+* Handling signals improperly. This version of the shell does not handle signals, so pressing Ctrl+C will exit the shell.
+* Executing non-existent commands or corrupted binaries.
 ***
 ## Authors
+>* Jose Milans (6764@holbertonstudents.com)
+>* Facundo Villagra (facundovillagra@outlook.es)

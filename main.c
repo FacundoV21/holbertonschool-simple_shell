@@ -10,9 +10,10 @@ void handle_sigint(int sig)
 	fflush(stdout);
 }
 /**
-* main - The main loop of the shell
-* Return: Always 0 (success)
-
+* main - The main loop of the shell.
+* @argc: Argument acount.
+* @argv: Array of argument strings.
+* Return: Always 0 (success).
 */
 int main(int argc, char **argv)
 {
