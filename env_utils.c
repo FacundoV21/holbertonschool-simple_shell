@@ -20,3 +20,19 @@ char *_getenv(const char *name)
 	}
 	return (NULL);
 }
+/**
+ * print_env - Print the current environment variables
+ *
+ * Iterates through the global variable and prints
+ * each string (environment variable) to stdout.
+ */
+void print_env(void)
+{
+	int i = 0;
+
+	while (environ[i])
+	{
+		printf("%s\n", environ[i]);
+		i++;
+	}
+}
