@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	size_t len = 0; /* Size of the input buffer */
 	ssize_t read; /* Number of characters read by getline */
 	char **tokens;/*2D arr to hold each parsed tok frm inplin*/
-	int i, fd_isatty, line_counter = 0;/*Loop cnter for frng mem*/
+	int i, fd_isatty, line_counter = 0, exit_status = EXIT_SUCCESS;
 	(void) argc;
 
 	signal(SIGINT, handle_sigint);
@@ -31,13 +31,13 @@ int main(int argc, char **argv)
 		fd_isatty = isatty(STDIN_FILENO);
 		if (fd_isatty)
 			printf("#cisfun$ ");  /* Display prompt */
-		read = getline(&input_line, &len, stdin);/*Read user inp. dynallocmem*/
+		read = getline(&input_line, &len, stdin);/*Read user inp. Dynallocmem*/
 		if (read == -1) /* If EOF (ctrl+d) */
 		{
 			free(input_line);
 			if (fd_isatty)
 				printf("\n");
-			exit(EXIT_SUCCESS);
+			return (exit_status);
 		}
 		tokens = parse_input(input_line); /* Parse inpline into tokens */
 		if (tokens[0] == NULL)
@@ -45,11 +45,12 @@ int main(int argc, char **argv)
 			free(tokens);
 			continue;
 		}
-		execute_command(tokens, argv[0], line_counter);/* Execute user's cmd */
+		exit_status = execute_command(tokens, argv[0], line_counter);
 		for (i = 0; tokens[i]; i++) /* To avoid memory leaks */
 			free(tokens[i]);
 		free(tokens); /* Main tokens ptr */
+		tokens = NULL;
 		}
 	free(input_line);/*To release mem if infloop ever breaks in fture mods*/
-	return (EXIT_SUCCESS);/*This might not be reached due to infloop*/
+	return (exit_status);/*This might not be reached due to infloop*/
 }
