@@ -70,9 +70,11 @@ char **resize_token_buffer(char **tokens, size_t *bufsize)
 	char **new_tokens = malloc(new_bufsize * sizeof(char *));
 	size_t i;
 
-	check_allocation(new_tokens);
 	if (!new_tokens)
-		return (tokens);
+	{
+		free(tokens);
+		check_allocation(new_tokens);
+	}
 	for (i = 0; i < *bufsize; i++)
 		new_tokens[i] = tokens[i];
 	free(tokens);
