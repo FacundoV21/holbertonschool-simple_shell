@@ -29,6 +29,7 @@ typedef struct path_s
 char **parse_input(char *input);
 char *search_path(char *cmd, path_t *path_list);
 char *_getenv(const char *name);
+void print_env(void);
 path_t *parse_path(void);
 path_t *create_new_node(char *token);
 void append_to_list(path_t **head, path_t *new_node);
