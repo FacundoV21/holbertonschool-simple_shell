@@ -1,40 +1,17 @@
 #include "shell.h"
 /**
-* _getenv - retrieves the value of an environment variable
-* @name: name of the environment variable to retrieve
-* Return: pointer to the value of the environment variable,
-* or NULL if not found
-*/
-char *_getenv(const char *name)
-{
-	int i = 0;
-	int len = strlen(name);
-
-	while (environ[i])
-	{
-		if (strncmp(environ[i], name, len) == 0 && environ[i][len] == '=')
-		{
-			return (&environ[i][len + 1]);
-		}
-		i++;
-	}
-	return (NULL);
-}
-/**
 * parse_path - Builds a linked list of directories from PATH
 * Return: Pointer to the head of the linked list
 * This function tokenises the PATH variable using : (delimiter)
-* and stores each directory into a node in a sing linked list.
-*/
+* and stores each directory into a node in a singly linked list.
+**/
 path_t *parse_path(void)
-{   /* Retrieving the PATH environment variable */
-	char *ori_path;
-	char *path; /* cp PATH before tokenising */
-	char *token;
-	path_t *head = NULL, *new_node, *temp;
+{
+	char *ori_path, *path, *token;
+	path_t *head = NULL, *new_node;
 
 	ori_path = _getenv("PATH");
-	if (ori_path == NULL)
+	if (!ori_path)
 		return (NULL);
 	path = strdup(ori_path);
 	if (!path)
@@ -42,27 +19,20 @@ path_t *parse_path(void)
 		fprintf(stderr, "shell: failed to duplicate PATH\n");
 		return (NULL);
 	}
-	token = strtok(path, ":"); /* Start tokenising PATH variable */
-	while (token) /* Iterate through each tokenised directory */
+	token = strtok(path, ":");
+	while (token)
 	{
-		new_node = malloc(sizeof(path_t));/* For new directory node */
+		new_node = create_new_node(token);
 		if (!new_node)
+		{
+			free_path_list(head);
+			free(path);
 			exit(EXIT_FAILURE);
-		/* Copying the tokenised directory to the new node */
-		new_node->dir = strdup(token);
-		new_node->next = NULL;
-		if (!head) /* If it's the first directory, set it as head */
-			head = new_node;
-		else
-		{/* Otherwise append to the end of the linked list */
-			temp = head;
-			while (temp->next)
-				temp = temp->next;
-			temp->next = new_node;
 		}
-		token = strtok(NULL, ":"); /*Continue tokenising nxt dirtry*/
+		append_to_list(&head, new_node);
+		token = strtok(NULL, ":");
 	}
-	free(path); /* Free the copied PATH */
+	free(path);
 	return (head);
 }
 /**
@@ -74,45 +44,89 @@ path_t *parse_path(void)
 * This fn iterates through the linked list of directories,
 * adding the provided cmd and checking if the returned full
 * path is valid and executable.
-*/
+**/
 char *search_path(char *cmd, path_t *path_list)
 {
 	char *full_path;
 	struct stat st;
 
-	while (path_list) /* Iterate through each dirtry in linked list */
+	while (path_list) /* Iterate through each dirtry in linked list*/
 	{ /* Allocate memory for the full path of the command */
 		full_path = malloc(strlen(path_list->dir) + strlen(cmd) + 2);
 		if (!full_path)
 		{
 			fprintf(stderr, "shell: failed to allocate full path\n");
 			return (NULL);
-		}
-		/* Build the full path */
+		} /* Build the full path */
 		strcpy(full_path, path_list->dir);
 		strcat(full_path, "/");
-		strcat(full_path, cmd);
-		/* Check if the builded path is executable */
-		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
-			return (full_path);
-	/* If not exec or doesn't exist, free memory and mv to nxt dirtry */
+		strcat(full_path, cmd);/*Check if builded path is executable*/
+		if (stat(full_path, &st) == 0)
+		{
+			if (st.st_mode & S_IXUSR)
+				return (full_path);
+		}
+		else if (errno != ENOENT)
+		{
+			fprintf(stderr, "shell: stat error: %s\n", strerror(errno));
+			free(full_path);
+			return (NULL);
+		}
 		free(full_path);
 		path_list = path_list->next;
 	}
 	return (NULL);
 }
 /**
+* create_new_node - Create a new node with given token data
+* @token: token data for node
+* Return: pointer to the new node
+**/
+path_t *create_new_node(char *token)
+{
+	path_t *new_node = malloc(sizeof(path_t));
+
+	if (!new_node)
+		return (NULL);
+	new_node->dir = strdup(token);
+	if (!new_node->dir)
+	{
+		free(new_node);
+		return (NULL);
+	}
+	new_node->next = NULL;
+	return (new_node);
+}
+/**
+* append_to_list - Append the node to the list
+* @head: pointer to head of the list
+* @new_node: node to append
+**/
+void append_to_list(path_t **head, path_t *new_node)
+{
+	path_t *temp;
+
+	if (!(*head))
+	{
+		*head = new_node;
+		return;
+	}
+	temp = *head;
+	while (temp->next)
+		temp = temp->next;
+	temp->next = new_node;
+}
+/**
 * free_path_list - Frees a linked list of PATH directories
 * @head: The head of the linked list
 * This function iteratively frees each node of the linked list
 * starting from the head, ensuring that no memory is leaked.
-*/
+**/
 void free_path_list(path_t *head)
 {
 	path_t *temp;
 
-/* Iterate through the list, freeing each directory node */
-	while (head)
+	while (head)/*Iter through list, freeing each dir node*/
 	{
 		temp = head->next;
 		free(head->dir); /* Freeing the directory string */
