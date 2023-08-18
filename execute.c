@@ -115,6 +115,11 @@ int execute_command(char **toks, char *prog, int l_num)
 		free(toks);
 		exit(EXIT_SUCCESS);
 	}
+	if (toks[0] && strcmp(toks[0], "env") == 0)
+	{
+		print_env();
+		return (EXIT_SUCCESS);
+	}
 	exit_status = direct_execute(toks, prog, l_num);
 
 	if (exit_status == 127)
