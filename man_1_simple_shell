@@ -1,68 +1,54 @@
-.TH _PRINTF
+.TH Holberton_Simple_Shell
 .SH "NAME"
-_printf \- prints content depending on the format
+Simple Shell \- takes command inputs and executes actions deppending on them.
 .SH LIBRARY
-main.h
+shell.h
 .SH SYNOPSIS
-int _printf(char *format, …);
+./hsh (starts the console on interactive mode).
+*command* | ./hsh (pipes the command to the console in non interactive mode).
 .SH DESCRIPTION:
-_printf aims to be able to print “format” which is a string received, as
-.PP
-well as some other arguments depending on directives given in format.
+This Shell aims to function in a similar way the original one does, running
+.P
+commands smoothly and managing the exits and errors in the correct way.
 .SH RETURN VALUE:
-If format is not NULL returns the amount of characters printed, otherwise
-.PP
-returns -1.
-.SH FORMAT SPECIFIERS:
-%s: prints a string.
-.PP
-%c: prints a single char.
-.PP
-%d: prints a decimal value.
-.PP
-%i: prints an integer value.
-.PP
-%b: prints an unsigned int on binary base.
-.PP
-%u: prints an unsigned int.
-.PP
-%o: prints an unsigned int on octal base
-.PP
-%x: prints an unsigned int in hexadecimal base lowercase
-.PP
-%X: prints an unsigned int in hexadecimal base uppercase
-.PP
-%S: Prints a string with the non printable characters represented with \x and the ascii value of the char.
-.PP
-%r: Prints a reversed string.
-.PP
-%R: Prints a Rot13'ed string.
-.PP
-%%: Prints the % sign
-.PP
-The format might include certain characters that could interfere with the
-.PP
-printing of the string, so there is a specific way to print them.
-.SH SPECIAL CHARACTERS:
-\\\\: prints the '\\' character.
-.PP
-\\”: prints the '“' character.
-.PP
-\\': prints the ''' character.
-.PP
-\\%:  prints the '%' character.
-.PP
-\\a: reproduces a sound alert
-.PP
-\\b: prints a backspace.
-.PP
-\\f: form feed
-.PP
-\\n: prints a new line
-.PP
-\\r: prints a carriage return
-.PP
-\\t: prints a tab
-.PP
-\\v: prints a vertical tab
+Returns an exit value depending on how the program was closed.
+.SH SIMPLE COMMANDS:
+echo: (Interactive mode)prints a string.
+.P
+echo: (Non interactive mode)runs the commands passed.
+.P
+(For different arguments check echo's manpage).
+.P
+cat: (Interactive mode)Reads the content of a text file.
+.P
+cat: (Non interactive mode)runs the commands passed inside a text file.
+.P
+(For different arguments check cat's manpage).
+.P
+ls: prints the content of the current directory
+.P
+(For different arguments check ls's manpage).
+.P
 .SH EXAMPLES:
+.nf
+# echo "/bin/ls" | ./hsh
+execute.c  hsh  main.c  parse.c  path.c  shell.h
+#
+#./hsh
+#cisfun$ echo "/bin/ls"
+/bin/ls
+#cisfun$ cat testing.txt
+/usr/bin/ls
+/bin/ls
+ls
+ls
+#cisfun$ exit
+#
+#cat testing.txt | ./hsh
+execute.c  hsh  main.c  parse.c  path.c  shell.h
+execute.c  hsh  main.c  parse.c  path.c  shell.h
+execute.c  hsh  main.c  parse.c  path.c  shell.h
+execute.c  hsh  main.c  parse.c  path.c  shell.h
+.fi
+.SH AUTHOR:
+This program was created by Jose Milans and Facundo Villagra.
