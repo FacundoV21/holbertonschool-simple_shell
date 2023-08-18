@@ -11,7 +11,7 @@ path_t *parse_path(void)
 	path_t *head = NULL, *new_node;
 
 	ori_path = _getenv("PATH");
-	if (!ori_path)
+	if (!ori_path || strlen(ori_path) == 0)
 		return (NULL);
 	path = strdup(ori_path);
 	if (!path)
