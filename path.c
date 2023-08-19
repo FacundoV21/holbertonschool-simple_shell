@@ -7,12 +7,15 @@
 **/
 path_t *parse_path(void)
 {
-	char *ori_path, *path, *token;
+	char *ori_path, *path = NULL, *token;
 	path_t *head = NULL, *new_node;
 
 	ori_path = _getenv("PATH");
 	if (!ori_path || strlen(ori_path) == 0)
+	{
+		free(path);
 		return (NULL);
+	}
 	path = strdup(ori_path);
 	if (!path)
 	{
