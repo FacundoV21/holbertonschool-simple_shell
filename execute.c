@@ -108,21 +108,31 @@ int execute_command(char **toks, char *prog, int l_num)
 	int i;
 	int exit_status = 0;
 
-	if (toks[0] && strcmp(toks[0], "exit") == 0)
+	if (!toks || !toks[0])
+	{
+		return (EXIT_FAILURE);
+	}
+	if (strcmp(toks[0], "exit") == 0)
 	{ /* Cleanup and exit */
 		for (i = 0; toks[i]; i++)
 			free(toks[i]);
 		free(toks);
 		exit(EXIT_SUCCESS);
 	}
-	if (toks[0] && strcmp(toks[0], "env") == 0)
+	if (toks[0])
 	{
-		print_env();
-		return (EXIT_SUCCESS);
+		if (strcmp(toks[0], "env") == 0)
+		{
+			print_env();
+			return (EXIT_SUCCESS);
+		}
+		exit_status = direct_execute(toks, prog, l_num);
+		if (exit_status == 127)
+			exit_status = path_execute(toks, prog, l_num);
 	}
-	exit_status = direct_execute(toks, prog, l_num);
-
-	if (exit_status == 127)
-		exit_status = path_execute(toks, prog, l_num);
+	else
+	{
+		return (EXIT_FAILURE);
+	}
 	return (exit_status);
 }
