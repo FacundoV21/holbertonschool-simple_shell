@@ -13,10 +13,7 @@ char **parse_input(char *input)
 
 	input[strcspn(input, "\n\r")] = '\0';
 	token = strtok(input, " \t\n\"");
-	if (!token)
-		return (init_token());
-
-	tokens = malloc(bufsize * sizeof(char *));
+	tokens = (token) ? malloc(bufsize * sizeof(char *)) : init_token();
 	check_allocation(tokens);
 
 	while (token)
@@ -26,7 +23,8 @@ char **parse_input(char *input)
 			tokens = resize_token_buffer(tokens, &bufsize);
 		token = strtok(NULL, " \t\n\"");
 	}
-	tokens[position] = NULL;
+	if (tokens)
+		tokens[position] = NULL;
 	return (tokens);
 }
 /**
