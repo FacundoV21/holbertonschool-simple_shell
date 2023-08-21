@@ -26,6 +26,8 @@ typedef struct path_s
 	struct path_s *next;
 } path_t;
 
+int cleanup(char *input_line, int status, int fd_isatty);
+void free_tokens(char **tokens);
 char **parse_input(char *input);
 char *search_path(char *cmd, path_t *path_list);
 char *_getenv(const char *name);
