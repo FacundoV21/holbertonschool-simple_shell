@@ -77,13 +77,8 @@ int path_execute(char **tokens, char *prog, int l_num)
 
 	if (!path_list)
 	{
-		if (access(tokens[0], X_OK) == -1)
-		{
-			fprintf(stderr, "./hsh: %d: %s: not found\n", l_num,
-			tokens[0]);
-			return (127);
-		}
-		return (exe_cmd_with_path(tokens[0], tokens, prog, l_num));
+		fprintf(stderr, "./hsh: %d: %s: not found\n", l_num, tokens[0]);
+		return (127);
 	}
 	f_path = search_path(tokens[0], path_list);
 	free_path_list(path_list);
