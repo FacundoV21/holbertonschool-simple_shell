@@ -78,6 +78,7 @@ path_t *create_new_node(char *token)
 	new_node->dir = strdup(token);
 	if (!new_node->dir)
 	{
+		free(new_node->dir);
 		free(new_node);
 		return (NULL);
 	}
