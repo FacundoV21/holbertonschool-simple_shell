@@ -12,14 +12,11 @@ path_t *parse_path(void)
 
 	ori_path = _getenv("PATH");
 	if (!ori_path || strlen(ori_path) == 0)
-	{
-		free(path);
 		return (NULL);
-	}
 	path = strdup(ori_path);
 	if (!path)
 	{
-		fprintf(stderr, "shell: failed to duplicate PATH\n");
+		perror("shell: Error duplicating PATH");
 		return (NULL);
 	}
 	token = strtok(path, ":");
@@ -50,32 +47,19 @@ path_t *parse_path(void)
 **/
 char *search_path(char *cmd, path_t *path_list)
 {
-	char *full_path;
+	char full_path[PATH_MAX];
 	struct stat st;
 
 	while (path_list) /* Iterate through each dirtry in linked list*/
 	{ /* Allocate memory for the full path of the command */
-		full_path = malloc(strlen(path_list->dir) + strlen(cmd) + 2);
-		if (!full_path)
-		{
-			fprintf(stderr, "shell: failed to allocate full path\n");
-			return (NULL);
-		} /* Build the full path */
-		strcpy(full_path, path_list->dir);
-		strcat(full_path, "/");
-		strcat(full_path, cmd);/*Check if builded path is executable*/
-		if (stat(full_path, &st) == 0)
-		{
-			if (st.st_mode & S_IXUSR)
-				return (full_path);
-		}
+		sprintf(full_path, "%s/%s", path_list->dir, cmd);
+		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
+			return (strdup(full_path));
 		else if (errno != ENOENT)
 		{
-			fprintf(stderr, "shell: stat error: %s\n", strerror(errno));
-			free(full_path);
+			perror("shell: Error using stat");
 			return (NULL);
 		}
-		free(full_path);
 		path_list = path_list->next;
 	}
 	return (NULL);
