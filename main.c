@@ -25,17 +25,22 @@ int main(int argc, char **argv)
 	(void) argc;
 
 	signal(SIGINT, handle_sigint);
-	while (1)
-	{/*Inf loop to keep shell running until manually closed */
+	while (1) /*Inf loop to keep shell running until manually closed */
+	{
 		line_counter++;
 		fd_isatty = isatty(STDIN_FILENO);
 		if (fd_isatty)
 			printf("#cisfun$ ");  /* Display prompt */
 		read = getline(&input_line, &len, stdin);/*Read user inp. Dynallocmem*/
-		if (read == -1) /* If EOF (ctrl+d) */
+		if (read == -1) /* EOF (ctrl+d) detected */
+		{
+			printf("\n");
+			free(input_line);
+			exit(exit_status);
+		}
 			break;
 		tokens = parse_input(input_line); /* Parse input line into tokens */
-		if (!tokens || !tokens[0])
+		if (!tokens || !tokens[0])/*If toks aren't present,free mem and cont*/
 		{
 			free(tokens);
 			continue;
@@ -43,7 +48,7 @@ int main(int argc, char **argv)
 		exit_status = execute_command(tokens, argv[0], line_counter);
 		free_tokens(tokens); /* Main tokens ptr */
 	}
-	/*To release mem if infloop ever breaks in fture mods*/
+	/*Clean and release mem if inf loop ever breaks due to fture modfcations*/
 	return (cleanup(input_line, exit_status, fd_isatty));
 }
 /**
