@@ -25,7 +25,7 @@ int exe_cmd_with_path(char *f_path, char **toks, char *prog, int l_num)
 		{
 			fprintf(stderr, "%s: %d: %s: %s\n", prog, l_num,
 					f_path, strerror(errno));
-			exit(2);
+			exit(errno);
 		}
 	}
 	else if (pid < 0) /* If fork() fails */
@@ -77,14 +77,14 @@ int path_execute(char **tokens, char *prog, int l_num)
 
 	if (!path_list)
 	{
-		fprintf(stderr, "./hsh: %d: %s: not found\n", l_num, tokens[0]);
+		fprintf(stderr, "%s: %d: %s: not found\n", prog, l_num, tokens[0]);
 		return (127);
 	}
 	f_path = search_path(tokens[0], path_list);
 	free_path_list(path_list);
 	if (!f_path)
 	{
-		fprintf(stderr, "./hsh: %d: %s: not found\n", l_num, tokens[0]);
+		fprintf(stderr, "%s: %d: %s: not found\n", prog, l_num, tokens[0]);
 		return (127);
 	}
 	status = exe_cmd_with_path(f_path, tokens, prog, l_num);
@@ -109,11 +109,12 @@ int execute_command(char **toks, char *prog, int l_num)
 	if (strcmp(toks[0], "exit") == 0)
 	{ /* Cleanup and exit */
 		free_tokens(toks);
-		return (EXIT_SUCCESS);
+		exit (EXIT_SUCCESS);
 	}
 	if (strcmp(toks[0], "env") == 0)
 	{
 		print_env();
+		free_tokens(toks);
 		return (EXIT_SUCCESS);
 	}
 	exit_status = direct_execute(toks, prog, l_num);
