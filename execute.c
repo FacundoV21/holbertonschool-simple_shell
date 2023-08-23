@@ -100,7 +100,6 @@ int path_execute(char **tokens, char *prog, int l_num)
  */
 int execute_command(char **toks, char *prog, int l_num)
 {
-	int i;
 	int exit_status = 0;
 
 	if (!toks || !toks[0])
@@ -109,10 +108,8 @@ int execute_command(char **toks, char *prog, int l_num)
 	}
 	if (strcmp(toks[0], "exit") == 0)
 	{ /* Cleanup and exit */
-		for (i = 0; toks[i]; i++)
-			free(toks[i]);
-		free(toks);
-		exit(EXIT_SUCCESS);
+		free_tokens(toks);
+		return (EXIT_SUCCESS);
 	}
 	if (strcmp(toks[0], "env") == 0)
 	{
