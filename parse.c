@@ -10,18 +10,34 @@ char **parse_input(char *input)
 	char **tokens;
 	size_t bufsize = BUFFER_SIZE, position = 0;
 	char *token;
+	char *delim = " \t\n";
+	char end_char, *end;
 
 	input[strcspn(input, "\n\r")] = '\0';
-	token = strtok(input, " \t\n\"");
+	token = strtok(input, delim);
 	tokens = (token) ? malloc(bufsize * sizeof(char *)) : init_token();
 	check_allocation(tokens);
 
 	while (token)
 	{
+		if (token[0] == '\"' || token[0] == '\'')
+		{
+			end_char = token[0] == '\"' ? '\"' : '\'';
+			token++;
+			end = strchr(token, end_char);
+			if (end)
+			{
+				*end = '\0';
+			}
+		}
+		else if (token[0] == '\\')
+		{
+			token++;
+		}
 		tokens[position++] = strdup(token);
 		if (position >= bufsize)
 			tokens = resize_token_buffer(tokens, &bufsize);
-		token = strtok(NULL, " \t\n\"");
+		token = strtok(NULL, delim);
 	}
 	if (tokens)
 		tokens[position] = NULL;
