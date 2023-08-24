@@ -32,12 +32,13 @@ int main(int argc, char **argv)
 		if (fd_isatty)
 			printf("#cisfun$ ");  /* Display prompt */
 		read = getline(&input_line, &len, stdin);/*Read user inp. Dynallocmem*/
-		if (read == -1) /* EOF (ctrl+d) detected */
+		if (read == -1)/* EOF (ctrl+d) detected */
 		{
 			printf("\n");
 			free(input_line);
 			exit(exit_status);
 		}
+		break;
 		tokens = parse_input(input_line); /* Parse input line into tokens */
 		if (!tokens || !tokens[0])/*If toks aren't present,free mem and cont*/
 		{
