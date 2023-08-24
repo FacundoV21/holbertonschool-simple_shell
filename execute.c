@@ -109,7 +109,7 @@ int execute_command(char **toks, char *prog, int l_num)
 	if (strcmp(toks[0], "exit") == 0)
 	{ /* Cleanup and exit */
 		free_tokens(toks);
-		exit (EXIT_SUCCESS);
+		return (-1);
 	}
 	if (strcmp(toks[0], "env") == 0)
 	{
