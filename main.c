@@ -38,7 +38,6 @@ int main(int argc, char **argv)
 			free(input_line);
 			exit(exit_status);
 		}
-			break;
 		tokens = parse_input(input_line); /* Parse input line into tokens */
 		if (!tokens || !tokens[0])/*If toks aren't present,free mem and cont*/
 		{
@@ -46,6 +45,10 @@ int main(int argc, char **argv)
 			continue;
 		}
 		exit_status = execute_command(tokens, argv[0], line_counter);
+		if (exit_status == -1)
+		{
+			break;
+		}
 		free_tokens(tokens); /* Main tokens ptr */
 	}
 	/*Clean and release mem if inf loop ever breaks due to fture modfcations*/
